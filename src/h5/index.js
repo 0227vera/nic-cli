@@ -2,47 +2,27 @@
  * 创建H5模板
  * inquirer: 交互使用的工具
  * ora: 交互loading
- * chalk: console颜色
- * mail: 发送邮件
- * inGit: 内部git地址标识
  */
 let inquirer = require('inquirer')
 const ora = require('ora')
-const chalk = require('chalk')
 const path = require('path')
-const mail = require('../mail')
-// const inGit = /(git\.sogou-inc\.com)/g
 
-const loading = text => {
-  return chalk.bgGreen(chalk.white(text))
-}
-
-const success = text => {
-  return chalk.green(text)
-}
-
-const warning = text => {
-  return chalk.yellow(text)
-}
-
-const info = text => {
-  return chalk.blue(text)
-}
-
-let {
+const {
   rewriteTemplate,
   createProject,
   copyTemplate,
   getUsername,
   ensureDir,
-  execCmd
-} = require('../creator')
+  execCmd,
+  color,
+  mail
+} = require('../utils')
 
 let base = [
   {
     type: 'input',
     name: 'projectName',
-    message: info('请输入项目名称'),
+    message: color.info('请输入项目名称'),
     validate: function(value) {
       if (ensureDir(value)) {
         return '此目录已经存在，请重新输入'
@@ -56,23 +36,15 @@ let base = [
   {
     type: 'input',
     name: 'description',
-    message: info('请输入项目描述'),
+    message: color.info('请输入项目描述'),
     default: function() {
       return 'h5开发模版'
     }
   },
   {
     type: 'input',
-    name: 'author',
-    message: info('请输入项目开发人员，如果是多人使用英文 "," 分割'),
-    default: function() {
-      return 'xx'
-    }
-  },
-  {
-    type: 'input',
     name: 'mails',
-    message: info('请输入开发人员邮箱，如果是多人使用英文 "," 分割'),
+    message: color.info('请输入开发人员邮箱(请输入真实有效的邮箱)，如果是多人使用英文 "," 分割'),
     default: function() {
       return 'xxx@xxxx.com'
     }
@@ -80,14 +52,14 @@ let base = [
   {
     type: 'list',
     name: 'langType',
-    message: info('请选择使用vue/react编写'),
+    message: color.info('请选择使用vue/react编写'),
     choices: [{ name: 'vue', value: 1 }, { name: 'react', value: 2 }],
     default: 0 // 默认是下标为0的选项
   },
   {
     type: 'input',
     name: 'projectContext',
-    message: info('请输入项目上下文(用于项目中的代理)'),
+    message: color.info('请输入项目上下文(用于项目中的代理)'),
     default: function() {
       return '/context'
     }
@@ -95,7 +67,7 @@ let base = [
   {
     type: 'input',
     name: 'projectProxyUrl',
-    message: info('请输入项目需要代理到的服务器(api文档地址))'),
+    message: color.info('请输入项目需要代理到的服务器(api文档地址))'),
     default: function() {
       return 'http://api.xxx.com/mock/xxx/'
     }
@@ -103,7 +75,7 @@ let base = [
   {
     type: 'confirm',
     name: 'needInitGit',
-    message: warning('项目初始化之后是否直接通过命令上传第一次git'),
+    message: color.warning('项目初始化之后是否直接通过命令上传第一次git'),
     default: function() {
       return true
     }
@@ -111,7 +83,7 @@ let base = [
   {
     type: 'input',
     name: 'gitAddress',
-    message: warning('请输入项目git地址'),
+    message: color.warning('请输入项目git地址，用于项目init，确保真实有效'),
     default: function() {
       return 'https://github.com/'
     },
@@ -122,7 +94,7 @@ let base = [
   {
     type: 'confirm',
     name: 'isAddCI',
-    message: warning('是否现在填写CI信息？'),
+    message: color.warning('是否现在填写CI信息？'),
     default: true,
     when(answer) {
       return answer.langType === 0 // 暂时隐藏ci的功能，使用misc的功能
@@ -131,15 +103,12 @@ let base = [
   {
     type: 'input',
     name: 'productionAddress',
-    message: warning(
+    message: color.warning(
       '请输入项目打包之后的地址(前缀会自动加上https://misc.sogou-inc.com/app/)'
     ),
     default: function() {
       return 'bi/xxx'
     }
-    // when(answer) { // 暂时统一使用misc的构建方式
-    //   return answer.langType === 2
-    // }
   }
 ]
 
@@ -147,7 +116,7 @@ let vueAddCi = [
   {
     type: 'input',
     name: 'parkName',
-    message: warning('请输入构建时输出补丁的压缩包名称(tar.gz)'),
+    message: color.warning('请输入构建时输出补丁的压缩包名称(tar.gz)'),
     default: function() {
       return 'app.front.tar.gz'
     }
@@ -155,7 +124,7 @@ let vueAddCi = [
   {
     type: 'input',
     name: 'host',
-    message: warning('请输入SFTP服务器地址'),
+    message: color.warning('请输入SFTP服务器地址'),
     default: function() {
       return '127.0.0.1'
     }
@@ -163,7 +132,7 @@ let vueAddCi = [
   {
     type: 'input',
     name: 'port',
-    message: warning('请输入SFTP服务器端口'),
+    message: color.warning('请输入SFTP服务器端口'),
     default: function() {
       return '80'
     }
@@ -171,7 +140,7 @@ let vueAddCi = [
   {
     type: 'input',
     name: 'username',
-    message: warning('请输入SFTP用户名'),
+    message: color.warning('请输入SFTP用户名'),
     default: function() {
       return 'xxx'
     }
@@ -179,7 +148,7 @@ let vueAddCi = [
   {
     type: 'input',
     name: 'password',
-    message: warning('请输入SFTP密码'),
+    message: color.warning('请输入SFTP密码'),
     default: function() {
       return 'xxx'
     }
@@ -187,7 +156,7 @@ let vueAddCi = [
   {
     type: 'input',
     name: 'sftpProjectPath',
-    message: warning('请输入SFTP上传目录'),
+    message: color.warning('请输入SFTP上传目录'),
     default: function() {
       return '/xxx/xxx/xxx_demo_V1.0.0_000_20200331_name_前端全部补丁'
     }
@@ -211,7 +180,7 @@ module.exports = async function() {
       '/xxx/xxx/xxx_demo_V1.0.0_000_20200331_name_前端全部补丁'
   }
 
-  const spinner = ora(loading('building for production...\n'))
+  const spinner = ora(color.loading('building for production...\n'))
   spinner.start()
   answer.username = await getUsername()
   let dir = await createProject(answer.projectName)
@@ -240,29 +209,21 @@ module.exports = async function() {
     'mv ' + path.resolve(dir, './.env.temp') + ' ' + path.resolve(dir, './.env')
   )
   spinner.stop()
-  console.log(chalk.green(`\n 项目初始化完成.\n 位置----> ${dir}\n`))
+  color.c_success(`\n 项目初始化完成.\n 位置----> ${dir}\n`)
 
   // 配置了git并且需要初始化信息的时候通过邮箱告知相关人员添加配置
-  // if (inGit.test(answer.gitAddress) && answer.needInitGit) {
-  const sending = ora(loading('正在为将您的信息发送邮件给相关人，请稍等……'))
+  const sending = ora(color.loading('正在为将您的信息发送邮件给相关人，请稍等……'))
   sending.start()
   const msg = await mail(answer)
-  console.log(chalk.cyan(`\n ${msg} \n `))
+  color.c_info(`\n ${msg} \n `)
   sending.stop()
-  console.log(success(`\n 已将您的项目信息发送给相关人员 \n `))
-  // }
-  console.log(
-    chalk.cyan(`-----------------------------------------------------------`)
-  )
+  color.c_success(`\n 已将您的项目信息发送给相关人员 \n `)
+  color.c_info('-----------------------------------------------------------')
 
   // 如果有git相关信息，直接通过命令初始化git，如果没有需要自己去初始化
   if (answer.needInitGit) {
-    console.log(success(`\n cd ${answer.projectName} \n npm run init`))
+    color.c_success(`\n cd ${answer.projectName} \n npm run init`)
   } else {
-    console.log(
-      success(
-        `\n cd ${answer.projectName} \n npm i \n npm start/npm run dev \n`
-      )
-    )
+    color.c_success(`\n cd ${answer.projectName} \n npm i \n npm start/npm run dev \n`)
   }
 }

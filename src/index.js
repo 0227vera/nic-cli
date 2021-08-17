@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
 let fs = require('fs')
 let path = require('path')
 let program = require('commander')
