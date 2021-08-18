@@ -17,7 +17,7 @@
   "dependencies": {
     "adm-zip": "^0.4.11",
     "art-template": "^4.13.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "babel-cli": "^6.26.0",
     "babel-env": "^2.4.1",
     "chalk": "^2.4.1",
