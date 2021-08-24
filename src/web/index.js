@@ -15,7 +15,7 @@ let {
   getUsername,
   ensureDir,
   execCmd
-} = require('../creator')
+} = require('../utils')
 
 let questions = [
   {

@@ -14,7 +14,7 @@ let {
   copyTemplate,
   getUsername,
   ensureDir
-} = require('../creator')
+} = require('../utils')
 
 let questions = [
   {
