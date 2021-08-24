@@ -24,7 +24,7 @@ let questions = [
     message: '请输入项目名称',
     validate: function (value) {
       if (ensureDir(value)) {
-        return '此目录已经存在' // todo: 询问是删除还是重新创建一个新的
+        return '此目录已经存在'
       }
       return true
     },
@@ -156,6 +156,7 @@ module.exports = async function () {
   let type = answer.langType === 1 ? 'vue' : 'react'
   if (answer.isStandard) {
     type = 'standard'
+    dir.projectName = 'web-vue-demo'
     await copyTemplate('standard', dir)
   } else {
     await copyTemplate('web-' + type, dir)

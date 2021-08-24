@@ -104,7 +104,7 @@ let base = [
     type: 'input',
     name: 'productionAddress',
     message: color.warning(
-      '请输入项目打包之后的地址(前缀会自动加上https://misc.sogou-inc.com/app/)'
+      '请输入项目打包之后的地址(前缀会自动加上https://misc.xxx.com/app/)'
     ),
     default: function() {
       return 'bi/xxx'
