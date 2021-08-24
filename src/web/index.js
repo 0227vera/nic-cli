@@ -68,10 +68,22 @@ let questions = [
   },
   {
     type: 'confirm',
-    name: 'isAddCI',
-    message: '是否现在填写CI信息？',
-    default: true
-  }
+    name: 'isStandard',
+    message: '是否需要拉vue的开源demo项目',
+    when(answer) {
+      return answer.langType === 1
+    },
+    default: function () {
+      return false
+    }
+  },
+  // NOTE: 先收起询问ci，之后根据需求定制
+  // {
+  //   type: 'confirm',
+  //   name: 'isAddCI',
+  //   message: '是否现在填写CI信息？',
+  //   default: true
+  // }
 ]
 
 let questions2 = [
@@ -142,19 +154,24 @@ module.exports = async function () {
   answer.username = await getUsername()
   let dir = await createProject(answer.projectName)
   let type = answer.langType === 1 ? 'vue' : 'react'
-  await copyTemplate('web-' + type, dir)
-  let awiatArr = type === 'vue' ? [
-    path.resolve(dir, './package.json'),
-    path.resolve(dir, './vue.config.js'),
-    path.resolve(dir, './.env.temp'),
-    path.resolve(dir, './.env.development')
-  ] : [
-    path.resolve(dir, './package.json'),
-    path.resolve(dir, './.env.temp'),
-    path.resolve(dir, './src/services/SetAxios.ts')
-  ]
-  await rewriteTemplate(answer, awiatArr)
-  await execCmd('mv ' + path.resolve(dir, './.env.temp') + ' ' + path.resolve(dir, './.env'))
+  if (answer.isStandard) {
+    type = 'standard'
+    await copyTemplate('standard', dir)
+  } else {
+    await copyTemplate('web-' + type, dir)
+    let awiatArr = type === 'vue' ? [
+      path.resolve(dir, './package.json'),
+      path.resolve(dir, './vue.config.js'),
+      path.resolve(dir, './.env.temp'),
+      path.resolve(dir, './.env.development')
+    ] : [
+      path.resolve(dir, './package.json'),
+      path.resolve(dir, './.env.temp'),
+      path.resolve(dir, './src/services/SetAxios.ts')
+    ]
+    await rewriteTemplate(answer, awiatArr)
+    await execCmd('mv ' + path.resolve(dir, './.env.temp') + ' ' + path.resolve(dir, './.env'))
+  }
   spinner.stop()
   console.log(chalk.cyan(`\n 项目初始化完成.\n 位置 ${dir}`))
 }

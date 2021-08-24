@@ -119,7 +119,10 @@ async function copyTemplate (type, target) {
  */
 function copyGitTemplace (type, target) {
     info('\n 开始拉取远程模板\n')
-    const url = 'https://github.com:0227vera/' + type + '#master' // 模板的git地址
+    let url = 'https://github.com:0227vera/' + type + '#master' // 模板的git地址
+    if (type === 'standard') {
+        url = 'https://gitee.com:panjiachen/vue-element-admin#master'
+    }
     return new Promise((resolve, reject) => {
         download(url, target, { clone: true }, function (err) {
             if (!err) {

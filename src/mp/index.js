@@ -26,7 +26,7 @@ let questions = [
       return true
     },
     default: function () {
-      return 'applet-template'
+      return 'mp-template'
     }
   }
 ]
