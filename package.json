@@ -1,6 +1,6 @@
 {
   "name": "nic-cli",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "description": "自定义脚手架",
   "main": "src/index.js",
   "scripts": {
@@ -16,11 +16,7 @@
   "author": "salvatore",
   "license": "ISC",
   "dependencies": {
-    "adm-zip": "^0.4.11",
     "art-template": "^4.13.0",
-    "axios": "^0.19.0",
-    "babel-cli": "^6.26.0",
-    "babel-env": "^2.4.1",
     "chalk": "^2.4.1",
     "commander": "^2.15.1",
     "download-git-repo": "^3.0.2",
@@ -32,9 +28,7 @@
     "qs": "^6.5.2",
     "username": "^4.0.0"
   },
-  "devDependencies": {
-    "cross-spawn": "^7.0.1"
-  },
+  "devDependencies": {},
   "engines": {
     "node": ">= 8.0.0",
     "npm": ">= 5.0.0"
