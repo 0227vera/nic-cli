@@ -81,7 +81,8 @@ return new Promise((resolve,reject) => {
  *
  * @param {*} projectName
  */
-async function createProject (projectName = process.env.PWD, projectPath) {
+async function createProject (projectName, projectPath) {
+    projectPath = projectPath || process.env.PWD
     const dir = await fse.ensureDir(projectPath + '/' + projectName)
     return dir
 }
@@ -93,7 +94,11 @@ async function createProject (projectName = process.env.PWD, projectPath) {
  * @param {*} projectPath 项目地址
  * @returns
  */
-const ensureDir = (projectName = process.env.PWD, projectPath) => fs.existsSync(projectPath + '/' + projectName)
+const ensureDir = (projectName, projectPath) => {
+    projectPath = projectPath || process.env.PWD
+    const dir = fs.existsSync(projectPath + '/' + projectName)
+    return dir
+} 
 
 /**
  *

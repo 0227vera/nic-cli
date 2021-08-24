@@ -12,7 +12,7 @@ let {
   copyTemplate,
   getUsername,
   ensureDir
-} = require('../creator')
+} = require('../utils')
 
 let questions = [
   {
@@ -37,7 +37,7 @@ module.exports = async function () {
   spinner.start()
   answer.username = await getUsername()
   let dir = await createProject(answer.projectName)
-  await copyTemplate('applet', dir)
+  await copyTemplate('mp', dir)
   spinner.stop()
   console.log(chalk.cyan(`\n 项目初始化完成.\n 位置 ${dir}`))
 }
