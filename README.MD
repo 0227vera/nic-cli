@@ -35,7 +35,13 @@ nic init web
 ## 小程序项目
 
 ```shell
-nic init applet
+nic init mp
+```
+
+## 微前端项目
+
+```shell
+nic init micro
 ```
 
 ## node 项目
